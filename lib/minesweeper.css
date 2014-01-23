@@ -1,0 +1,141 @@
+@font-face
+{
+font-family: Bowlby One SC;
+src: url(BowlbyOneSC-Regular.ttf);
+}
+html{
+	background:url('../img/sea.jpg')center center no-repeat;
+}
+body{
+	margin:0;
+	padding:0;
+}
+.field{
+	width:39px;
+	height:39px;
+	float:left;
+	border-right:1px solid #000;
+	border-bottom:1px solid #000;
+}
+.field_holder{
+	width:800px;
+	height:400px;
+	float:left;
+	border:1px solid #000;
+}
+.game_container{
+	width:802px;
+	margin:0 auto;
+	position:relative;
+	margin-top:10px;
+}
+.overlay{
+	background:#000;
+	opacity:0.3;
+	width:39px;
+	height:39px;
+	float:left;
+	border-right:1px solid #000;
+	border-bottom:1px solid #000;
+	position: relative;
+	left: 1px;
+}
+.overlay_container{
+	width:800px;
+	height:400px;
+	margin-top:-401px;
+	float:left;
+}
+.bomb_container{
+	width:800px;
+	height:400px;
+	margin-top:-401px;
+	margin-left:1px;
+	float:left;
+}
+.mystery_container{
+	width:800px;
+	height:400px;
+	margin-top:-401px;
+	float:left;
+	margin-left:1px;
+}
+.mark_bomb{
+	visibility:hidden;
+	width:39px;
+	height:39px;
+	float:left;
+	border-right:1px solid #000;
+	border-bottom:1px solid #000;
+}
+.mark_mystery{
+	visibility:hidden;
+	width:39px;
+	height:39px;
+	float:left;
+	background: url('../img/questionmark.png');
+	border-right:1px solid #000;
+	border-bottom:1px solid #000;
+}
+.field img{
+	display:none;
+}
+#winbox, #losebox{
+	display:none;
+	position:fixed;
+	margin:0 auto;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.4);
+	z-index:1;
+	top:0;
+}
+.endbox{
+	background: rgba(255,255,255, 0.8);
+	height: 70px;
+	width: 200px;
+	margin: 0 auto;
+	border:1px solid #000;
+	margin-top:24%;
+	padding:10px;
+	text-align:center;
+}
+.endbox button{
+	margin-top: 20px;
+	border: 0;
+	width: 100px;
+	height: 25px;
+}
+.replayGame:hover{
+	background:#fff;
+	cursor:pointer;
+}
+.endWin{
+	color:rgb(0, 160, 0);
+}
+.endLose{
+	color:rgb(185, 0, 0);
+}
+.endWin, .endLose{
+	font-size:18px;
+	font-family:verdana, sans-serif;
+}
+.page_title{
+	font-family: 'Bowlby One SC', cursive;
+	margin: 0 auto;
+	width: 450px;
+	font-size: 55px;
+	height:140px;
+	padding-top:20px;
+}
+.subtitle{
+	font-size:14px;
+	font-family:verdana;
+	position: relative;
+	top: -50px;
+	font-style: italic;
+	color:#000!important;
+}
+.page_title span{
+	color:rgba(155, 0 ,10 ,1);
+}
