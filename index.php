@@ -2,7 +2,6 @@
 <head>
 	<!-- Commented out for  offline use -->
 	<script src="lib/jquery-min.js"></script>
-
  	<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
 	<!-- <link href='http://fonts.googleapis.com/css?family=Bowlby+One+SC' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Vampiro+One' rel='stylesheet' type='text/css'> -->
