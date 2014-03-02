@@ -1,17 +1,18 @@
 <!doctype HTML>
 <head>
 	<!-- Commented out for  offline use -->
-	<script src="lib/jquery-min.js"></script>
- 	<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Bowlby+One+SC' rel='stylesheet' type='text/css'>
-	<link href='http://fonts.googleapis.com/css?family=Vampiro+One' rel='stylesheet' type='text/css'> -->
+	<!--<script src="lib/jquery-min.js"></script>-->
+ 	 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Bowlby+One+SC' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Vampiro+One' rel='stylesheet' type='text/css'>
+	<link href="lib/minesweeper_galactic.css" rel="stylesheet">
 	<?php
-	$rand = rand(0,2);
-	if($rand == 1){
-		echo '<link href="lib/minesweeper_galactic.css" rel="stylesheet">';
-	}else{
-		echo '<link href="lib/minesweeper.css" rel="stylesheet">';
-	}
+	//$rand = rand(0,2);
+	//if($rand == 1){
+	//	echo '<link href="lib/minesweeper_galactic.css" rel="stylesheet">';
+	//}else{
+	//	echo '<link href="lib/minesweeper.css" rel="stylesheet">';
+	//}
 	?>
 </head>
 <body>
