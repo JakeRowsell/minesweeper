@@ -10,10 +10,10 @@ __)((/(-(-/)(-/
 ===========
 The classic game of minesweeper made predominantly with jQuery
 
-Todo: < structure
-Remove ALL PHP and change file to HTML
-Create elements with Javascript rather than load into
-
-Game:
-Varying field size
-Improve Icons
+Todo: < structure \n
+Remove ALL PHP and change file to HTML \n
+Create elements with Javascript rather than load into \n
+\n
+Game:\n
+Varying field size\n
+Improve Icons\n
