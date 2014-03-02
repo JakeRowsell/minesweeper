@@ -1,12 +1,4 @@
-                 
- /|/| '  _       
-/   |//)(-       
-                 
-  __             
- (     _ _   _ _ 
-__)((/(-(-/)(-/  
-         /       
-
+MineSweeper!
 ===========
 The classic game of minesweeper made predominantly with jQuery
 
