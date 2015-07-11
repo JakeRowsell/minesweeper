@@ -6,14 +6,6 @@
 	<link href='http://fonts.googleapis.com/css?family=Bowlby+One+SC' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Vampiro+One' rel='stylesheet' type='text/css'>
 	<link href="lib/minesweeper_galactic.css" rel="stylesheet">
-	<?php
-	//$rand = rand(0,2);
-	//if($rand == 1){
-	//	echo '<link href="lib/minesweeper_galactic.css" rel="stylesheet">';
-	//}else{
-	//	echo '<link href="lib/minesweeper.css" rel="stylesheet">';
-	//}
-	?>
 </head>
 <body>
 <div id="winbox">
@@ -30,7 +22,7 @@
 </div>
 	
 <div class="page_title">Mine<span>Sweeper</span>!<br/>
-	<span class="subtitle">Made with PHP, jQuery and HTML</span>
+	<span class="subtitle">Made with JavaScript and HTML</span>
 </div>
 <div class="game_container">
 	<div class="field_holder"></div>
@@ -39,13 +31,8 @@
     <div class="overlay_container"></div>
 </div>
 
+
+<script src="js/field.js"></script>
+<script src="js/map.js"></script>
 <script src="lib/minesweeper.js"></script>
 </body>		
-
-
-<!-- difficulty &amp; fieldsize <br/>
-make functions out of field holder repeating code<br/>
-better icons + styling<br/>
-right click field then left causes freeze
-
-Images for: numbers, bomb, questionmark, danger -->
