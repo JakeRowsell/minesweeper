@@ -18,6 +18,10 @@ body{
 	border-right:1px solid #00f;
 	border-bottom:1px solid #00f;
 }
+.field.closed{
+    background:#000;
+	opacity:0.3; 
+}
 .field_holder{
 	width:800px;
 	height:400px;
@@ -77,9 +81,6 @@ body{
 	background: url('../img/questionmark.png');
 	border-right:1px solid #00f;
 	border-bottom:1px solid #00f;
-}
-.field img{
-	display:none;
 }
 #winbox, #losebox{
 	display:none;

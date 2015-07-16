@@ -2,24 +2,22 @@
 *   Map object 
 *   @param {Int} width 
 *   @param {Int} height
-*   @param {Int} bombs
+*   @param {Int} mines
 *   @param {Int} opened
 *   @returns {Object} map
 *   @returns {Int} map.width 
 *   @returns {Int} map.height 
-*   @returns {Int} map.bombs 
+*   @returns {Int} map.mines 
 *   @returns {Int} map.opened
 *   @returns {Array} map.fields
 */
 
-function Map(width, height, bombs){
+function Map(width, height, mines){
     this.width = width;
     this.height = height;
-    this.bombs = bombs;
+    this.size = width * height;
+    this.mines = mines;
     this.opened = 0;
     this.fields = [];
 }
 
-(function(){
-    console.log(new Map(1,2,false,2));
-})()

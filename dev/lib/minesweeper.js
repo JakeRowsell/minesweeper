@@ -1,307 +1,356 @@
-var x = 0;
-var mines = 30;
-var fieldsize = 199;
-var fields = [];
-for (var i = 0; i <= 199; i++ ) {
-    fields[i] = 0;
-}
-for (var n = 1; n <= mines; n++ ) {
-    var random = Math.floor(Math.random() * (fieldsize - 0 + 1)) + 0;
-    if(fields[random] != -1){
-        fields[random] = -1;	
-        if((random == 0) || (random == 19) || (random == 180) || (random == 199)){
-            if (random == 0 ){
-                fields[random+1] == -1 ? x++ : fields[random+1]++;
-                fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid
-                fields[random+21] == -1 ? x++ : fields[random+21]++; //botright
-            }
-            else if (random == 19){
-                fields[random-1] == -1 ? x++ : fields[random-1]++;
-                fields[random+19] == -1 ? x++ : fields[random+19]++; //botleft
-                fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid
-            }
-            else if (random == 180){
-                fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid
-                fields[random-19] == -1 ? x++ : fields[random-19]++; //topright
-                fields[random+1] == -1 ? x++ : fields[random+1]++;
-            }else{
-                fields[random-21] == -1 ? x++ : fields[random-21]++; //topleft
-                fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid	
-                fields[random-1] == -1 ? x++ : fields[random-1]++;			
-            }
-        }
-        // IF FIRST LINE NOT CORNER
-        else if(random < 20){
-            fields[random-1] == -1 ? x++ : fields[random-1]++;
-            fields[random+1] == -1 ? x++ : fields[random+1]++;
-            fields[random+19] == -1 ? x++ : fields[random+19]++; //botleft
-            fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid
-            fields[random+21] == -1 ? x++ : fields[random+21]++; //botright
-        }
-        // IF LEFT NOT CORNER
-        else if((random > 180) && (random < 199)){
-            fields[random-21] == -1 ? x++ : fields[random-21]++; //topleft
-            fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid
-            fields[random-19] == -1 ? x++ : fields[random-19]++; //topright
-            fields[random-1] == -1 ? x++ : fields[random-1]++;
-            fields[random+1] == -1 ? x++ : fields[random+1]++;	
-        }
-        else if(((random % 20) == 0)){
-            fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid
-            fields[random-19] == -1 ? x++ : fields[random-19]++; //topright
-            fields[random+1] == -1 ? x++ : fields[random+1]++;
-            fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid	
-            fields[random+21] == -1 ? x++ : fields[random+21]++; //botright
-        }
-        else if(((random % 20) == 19)){
-            fields[random-21] == -1 ? x++ : fields[random-21]++; //topleft
-            fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid
-            fields[random-1] == -1 ? x++ : fields[random-1]++;
-            fields[random+19] == -1 ? x++ : fields[random+19]++; //botleft
-            fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid	
-        }else{
-            fields[random-21] == -1 ? x++ : fields[random-21]++; //topleft
-            fields[random-20] == -1 ? x++ : fields[random-20]++; //topmid
-            fields[random-19] == -1 ? x++ : fields[random-19]++; //topright
-            fields[random-1] == -1 ? x++ : fields[random-1]++;
-            fields[random+1] == -1 ? x++ : fields[random+1]++;
-            fields[random+19] == -1 ? x++ : fields[random+19]++; //botleft
-            fields[random+20] == -1 ? x++ : fields[random+20]++; //botmid
-            fields[random+21] == -1 ? x++ : fields[random+21]++; //botright
-        }
-    }else{
-        n--;
-    }
-}
-        
-for(var i = 0; i < 200; i++){ // Append to .field_holder
-    if(fields[i] == -1){
-        $('.field_holder').append("<div class='field "+i+" type_"+fields[i]+"'><img src='img/mine.png' width='32' height='32' style='padding: 3px 0 0 3px;' /></div>");
-    }else{
-        $('.field_holder').append("<div class='field "+i+" type_"+fields[i]+"'><img src='img/"+fields[i]+".png' ></div>");
-    }
-};
+// global mine sweeper obj
+var _MS = new _MS(".field_holder");
 
-for(var i = 0; i < 200; i++){ // append to bomb container
-    $('.bomb_container').append("<div class='mark_bomb bomb_"+i+"'><img src='img/danger.png' /></div>");
-    $('.mystery_container').append("<div class='mark_mystery mystery_"+i+"'></div>");
-    $('.overlay_container').append("<div class='overlay' id='"+i+"'></div>");
+function _MS(target){
+ 
+    var root = this;
+    
+    this._config = {
+        mines: 30,
+        width: 20,
+        height: 10,
+        mineImg: "",
+        questionImg: "",
+        flagImg: "",
+        targetSelector: target
+    }
+    console.log(this);
+    this.map = init(this._config.width, this._config.height, this._config.mines);
+
+    function init(width, height, mines){
+        $(root._config.targetSelector).empty();
+        var map = new Map(width, height, mines);
+        setupFields(map);
+        setupMines(map);
+        addFields(map);
+        return map;
+    }
+    
+   /*
+*   Create fields objects to add mines to, give them all an x and y axis position
+*/
+function setupFields(map){
+    
+    //  For each needed field insert one to map.fields
+    for (var i = 0; i < map.size; i++ ) {
+
+        // get horizontal position in grid by N%W 
+        var xPos = i % map.width;
+
+        // get vertical position in grid by Math.floor(N/W) 
+        var yPos = Math.floor(i/map.width);
+
+        //  Create Field objects and add to map
+        map.fields.push(new Field(xPos, yPos));
+
+    }   
 }
-var bombs_marked;
-var total_fields;
-var mines;
-var field_size = 200;
-total_fields = field_size;
-bombs_marked = 0;
-$('.overlay').mousedown(function(event) {
+
+/*
+*   Setup mines in minefield based on random numbers
+*/
+function setupMines(map){
+    
+    //  Amount of mines required
+    var mines = map.mines;
+    
+    //  Array of fields to add mines to
+    var fields = map.fields;
+    
+    for (var n = 0; n < mines; n++ ) {
+        
+        //  Generate a random number to turn into a mine
+        var random = Math.floor(Math.random() * (map.size )) + 0;
+
+        //  If can't be marked as a mine find another random number
+        if(!markAsMine(map, random)){
+            n--;
+        }
+    }
+}
+
+/*
+*   Mark a field as a mine based on field's index in map.fields during setup of minefield
+*   Also calls 'incrementSurrounding()' to ensure fields around mine are updated to reflext correct value
+*   @returns {Bool} 
+*/
+function markAsMine(map, fieldIndex){
+
+    var field = map.fields[fieldIndex];
+
+    //  If field already is a mine return false
+    if(field.mine){
+        return false;   
+    }else{
+    
+        //  mark this as a mine
+        field.mine = true;
+    
+        //  unset number for this field
+        field.number = 0;
+    
+        // increment fields around field
+        incrementSurrounding(map, fieldIndex);   
+        
+        // Field successfully marked as a mine, return true
+        return true;
+        
+    }
+}
+
+/*
+*   When a field is set to be a mine, increment surrounding fields number value
+*/
+function incrementSurrounding(map, fieldIndex){
+    
+    var field = map.fields[fieldIndex];
+    
+    // Determine position of field on x and y axis
+    var xPos = parseInt(field.pos.split(".")[0]);
+    var yPos = parseInt(field.pos.split(".")[1]);
+    
+    var isTop = yPos === 0;
+    var isLeft = xPos === 0;
+    var isRight = xPos === (map.width - 1);
+    var isBottom = yPos === (map.height - 1);
+    
+
+    //  Increment surrounding fields, excluding fields not on the map or with a border between them
+    // increment top left
+    if(!isTop && !isLeft){
+        incrementFieldNumber(map.fields[fieldIndex - map.width - 1]);   
+    }
+    // increment top
+    if(!isTop){
+        incrementFieldNumber(map.fields[fieldIndex - map.width]);   
+    }
+    //  increment top right
+    if(!isTop && !isRight){
+        incrementFieldNumber(map.fields[fieldIndex - map.width + 1]);   
+    }
+    //  increment left
+    if(!isLeft){
+        incrementFieldNumber(map.fields[fieldIndex  - 1]);   
+    }
+    //  increment right
+    if(!isRight){
+        incrementFieldNumber(map.fields[fieldIndex + 1]);   
+    }
+    //  increment bottom left
+    if(!isBottom && !isLeft){
+        incrementFieldNumber(map.fields[fieldIndex + map.width - 1]);   
+    }
+    //  increment bottom 
+    if(!isBottom){
+        incrementFieldNumber(map.fields[fieldIndex + map.width]);   
+    }
+    //  increment bottom right
+    if(!isBottom && !isRight){
+        incrementFieldNumber(map.fields[fieldIndex + map.width + 1]);
+    }
+
+}
+
+/*  
+*   If a field isn't a mine increment number  
+*/
+function incrementFieldNumber(field){
+    
+    //  If field isn't a mine increment field number
+    if(!field.mine){
+        field.number += 1;   
+    }
+}
+   
+/*  
+*   Add fields to map
+*/
+function addFields(map){
+    for(var i = 0; i < 200; i++){ // Append to provided target selector
+        $(root._config.targetSelector).append("<div class='field closed type_"+map.fields[i].number+"' id='"+i+"'></div>");
+    }
+}
+
+
+//  Use on instead of regular mousedown as fields will be added after function bound
+$('body').on('mousedown', '.field', function(event) {
+    console.log(event.target);
+    console.log("////////");
+    console.log($(this).id);
+    var map = _MS.map;
+    // if event target is img select parent div and get id from there
     switch (event.which) {
         case 1:
-			theID = event.target.id;
-			if($('.bomb_'+theID).css("visibility") == "hidden" && $('.mystery_'+theID).css("visibility") == "hidden"){
-				$('.'+theID+' img').show();
-				if($('.'+theID).hasClass('type_-1')){
-					$('.overlay').hide();
-					$('.field img').show();
-					$('#losebox').show();
-				}
-				if($('.'+theID).hasClass('type_0')){
-				 	manageAround(theID);
+            //  open current field
+            //  if bomb end game
+            //  if not bomb show number
+            
+			var fieldIndex = event.target.id;
+            
+            //  If field is flagged don't allow opening
+            console.log(fieldIndex); 
+			if(!map.fields[fieldIndex].flagged){
+                
+                exposeField(fieldIndex, map);
+                //  If field selected is a bomb
+				if(map.fields[fieldIndex].mine){
+					playerLost(map);
+                //  If number of surrounding bombs is 0 call 'exposeAround()' to open surrounding fields
 				}
 	        }else{
 				alert("Unmark field before clicking");
 	        	return false;
 	        }
-	        clearField(theID);
-	        checkWin();
+	        checkWin(map);
 		 	break;
         case 3:
-        	theID = event.target.id;
-        	if ($('#'+theID).is(":visible") && $('.bomb_'+theID).css("visibility") == "hidden" && $('.mystery_'+theID).css("visibility") == "hidden"){
-        		$('#'+theID).css("background", "none");
-        		$('.bomb_'+theID).css("visibility", "visible");  
-        		bombs_marked++;
-			}else if($('.bomb_'+theID).css("visibility") != "hidden"){
-				$('.bomb_'+theID).css("visibility", "hidden");
-				$('.mystery_'+theID).css("visibility", "visible");
-				bombs_marked--;
-			}else{
-	        	$('.mystery_'+theID).css("visibility", "hidden");
-	        	$('#'+theID).css("background", "#000");
+            //  flag current field
+        	var fieldIndex = event.target.id;
+            console.log(fieldIndex);
+            //  Mark as a bomb
+            //  if not currently open, if n
+        	if (!map.fields[fieldIndex].opened && !map.fields[fieldIndex].flagged && !map.fields[fieldIndex].mystery){
+        		map.fields[fieldIndex].flagged = true;
+                $('#'+fieldIndex).append("<img src='img/danger.png'/>");
+                $('#'+fieldIndex).removeClass('closed');
+            //  Mark as a questionmark
+			}else if(!map.fields[fieldIndex].opened && map.fields[fieldIndex].flagged){
+                map.fields[fieldIndex].flagged = false;
+                map.fields[fieldIndex].mystery = true;
+				$('#'+fieldIndex).empty();
+				$('#'+fieldIndex).append("<img src='img/questionmark.png'/>");
+            }else if(!map.fields[fieldIndex].opened){
+                map.fields[fieldIndex].mystery = false;
+	        	$('#'+fieldIndex).empty();
+                $('#'+fieldIndex).addClass('closed');
 			}
-			checkWin();
+			checkWin(map);
         	break;
     }
    return false;
 });
-// disable rightclick inspection
+
+/*
+*   Due to right click being needed to flag fields, disable rightclick inspection
+*/
 $("html, body").on("contextmenu",function(e){
 	return false;
 });
-var around = new Array();
-function manageAround(id_raw){
-	id = parseInt(id_raw);
-	if((id % 20) != 0 && (id % 20) != 19){
-		if(id > 0){
-			around.push(id-1);
-		}
-		if(id >= 20){
-			around.push(id-20)
-		}
-		if(id < 199){
-			around.push(id+1)
-		}
-		if(id <= 179){
-			around.push(id+20);
-		}
-	}
-	// if left side
-	else if ((id % 20) == 0){
-		if(id >= 20){
-			around.push(id-20)
-		}
-		around.push(id+1)
-		if(id <= 179){
-			around.push(id+20);
-		}
-	}
-	// if right side
-	else{
-		around.push(id-1);
-		if(id >= 20){
-			around.push(id-20)
-		}
-		if(id <= 179){
-			around.push(id+20);
-		}
-	}
-	around.push(id);
-	getAround(id);
-	getDiagonal(id);
-	checkWin();
+
+function playerLost(map){
+    $('.field').removeClass('closed');
+    $('#losebox').show();
+    exposeMap(map);
+}   
+
+function exposeMap(map){
+    for(var i = 0; i < map.fields.length; i++){
+        if(!map.fields[i].opened){
+            exposeField(i, map);
+        }
+    }
 }
-function getAround(){
-	counter = 0;
-	while(counter < 21){
-		$.each(around, function(i, v){
-			if($('.'+v).hasClass('type_0')){
-				clearField(v);
-				getDiagonal(v);
-				checkAround(v);
-				around = $.grep(around, function(value) {
-					return value != v;
-				});
-			}else{
-				clearField(v);
-				around = $.grep(around, function(value) {
-	  				return value != v;
-				});
-			}
-			var temp = [];
-			$.each(around, function(i, el){
-	   			 if($.inArray(el, temp) === -1) temp.push(el);
-			});
-			around = temp;
-		});
-	counter++;
+
+/*
+*   With the index of a field in map.fields open the field 
+*/
+function exposeField(index, map){
+    // if bomb add bomb img and show
+    // if number add number
+    var field = map.fields[index];
+    if(!field.opened){
+        
+        $('#'+index).removeClass('closed');
+        map.fields[index].opened = true;
+        if(field.mine){
+            $('#'+index).append("<img src='img/mine.png' width='32' height='32' style='padding: 3px 0 0 3px;' />");
+        }else{
+            $('#'+index).append("<img src='img/"+map.fields[index].number+".png' >");
+            if(map.fields[index].number === 0){
+                exposeAround(index, map);   
+            }
+        }
+    }
+    // remove all instances of that index
+    while(around.indexOf(index) >= 0){
+        around.splice(around.indexOf(index), 1);
+    }
+    if(around.length){
+        exposeField(around[0], map);   
+    }
+}
+
+var around = [];
+function exposeAround(indexRaw, map){
+    // get index
+    // for each around expose
+    var index = parseInt(indexRaw);
+    // if in an edge don't expose all
+    //  else
+    
+    var isTop = index < map.width;
+    var isLeft = index % map.width === 0;
+    var isRight = index % (map.width - 1) === 0;
+    var isBot = index >= map.size - map.width - 1;
+    
+    // unless in top row, or left row
+    if(!isTop && !isLeft){
+    around.push(index - map.width - 1);
+    }
+    if(!isTop){
+    around.push(index - map.width);
+    }
+    if(!isTop && !isRight){
+    around.push(index - map.width + 1);
+    }
+    if(!isLeft){
+    around.push(index - 1);
+    }
+    if(!isRight){
+    around.push(index + 1);
+    }
+    if(!isLeft && !isBot){
+    around.push(index + map.width - 1);
+    }
+    if(!isBot){
+    around.push(index + map.width);
+    }
+    if(!isBot && !isRight){
+    around.push(index + map.width + 1);
+    }
+	
+}
+
+
+/*  
+*   Check you've won the game, and if so show '#winbox' div
+*/
+function checkWin(map){
+    // for each field, if it's a bomb but not flagged you've not won, if you've marked non-bombs you also haven't won.
+    var win = true;
+    for(var i = 0; i < map.fields.length; i++){
+        if((map.fields[i].mine && !map.fields[i].flagged) || (!map.fields[i].mine && map.fields[i].flagged)){
+            win = false;
+        }
+    }
+	if(win){
+        $('#winbox').show();
 	}
 }
 
-function checkAround(id_raw2){
- 	id2 = parseInt(id_raw2);
-	 	// if not left collumn
-		if((id2 % 20) != 0){
-			around.push(id2-1);
-		}
-		// if not bottom collumn
-		if(id2 >= 20){
-			around.push(id2-20)
-		}
-		// not right collumn
-		if((id2 % 20) != 19){
-			around.push(id2+1)
-		}
-		//if not last row
-		if(id2 <= 179){
-			around.push(id2+20);
-		}
-	around.push(id2);	
-};
-
-function getDiagonal(id_raw3){
-	id3 = parseInt(id_raw3);
-	tl = id3-21;
-	tr = id3-19;
-	bl = id3+19;
-	br = id3+21;
-	//corners
-	if((id3 == 0) || (id3 == 19) || (id3 == 180) || (id3 == 199)){
-		if(id3 == 0){
-			clearField(br);
-		}
-		else if(id3 == 19){
-			clearField(bl);
-		}
-		else if(id3 == 180){
-			clearField(tr);
-		}
-		else{
-			clearField(tl);
-		}
-	}else{
-	 	// if left collumn
-		if((id3 % 20) == 0){
-			//top right, bot right
-			clearField(tr);
-			clearField(br);
-		}
-		// right collumn
-		else if((id3 % 20) == 19){
-			// top left, bottom left
-			clearField(tl);
-			clearField(bl);
-		}
-		// if top collumn
-		else if(id3 <= 20){
-			// bottom left, bottom right
-			clearField(bl);
-			clearField(br);
-		}
-		
-		//if  last row
-		else if(id3 >= 179){
-			// top left, top right
-			clearField(tl);
-			clearField(tr);
-		}
-		else{
-			around.push(tl);
-			around.push(tr);
-			around.push(bl);
-			around.push(br);
-			// clearField(tl);
-			// clearField(tr);
-			// clearField(bl);
-			// clearField(br);
-		}
-	}
-}
-function clearField(id_raw4){
-	id4 = parseInt(id_raw4);
-	if($('.bomb_'+id_raw4).css("visibility") == "hidden" && $('.mystery_'+id_raw4).css("visibility") == "hidden"){
-		if($('#'+id4).css("visibility") != "hidden"){
-			$('#'+id4).css("visibility", "hidden");
-			$('.'+id4+' img').show();
-			field_size--;
-		}	
-	}
-}
-function checkWin(){
-	if(mines == bombs_marked){
-		if(field_size == bombs_marked){
-			$('#winbox').show();
-		}
-	}
-}
+/*
+*   On click replay hide win/lose box and reset field
+*/
 $('.replayGame').click(function(){
-	window.location.reload();
-});
+    // instead, clear field and setup again
+    $('#winbox').hide();
+    $('#losebox').hide();
+	map = init(root._config.width, root._config.height, root._config.mines);
+}); 
+    
+    
+    
+    
+}
+
+
